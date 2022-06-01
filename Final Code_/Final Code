@@ -1,0 +1,37 @@
+from logging.config import dictConfig
+from turtle import pd
+from numpy import sort, var
+import pandas as pd
+
+df = pd.read_excel('User 1.xlsx')
+unq_list = list(df.TDE_CATEGORY.unique())
+category_dict = {i:[0,0] for i in unq_list} #first element is num entries; second element is the sum of $-amounts
+list_catg_order = df.TDE_CATEGORY.to_list()
+list_amt_order = df.AMOUNT.to_list()
+
+# Sorts dict in needed order
+for i, j in zip(list_catg_order, list_amt_order):
+    category_dict[i][0] = category_dict[i][0] + 1
+    category_dict[i][1] = category_dict[i][1] + float(j)
+
+# Gets most number of occurances and highest amount
+highest_occ_num = 0
+highest_amt = 0
+for i,j in category_dict.values():
+   if (i > highest_occ_num):
+       highest_occ_num = i
+for i,j in category_dict.values():
+    if (j > highest_amt):
+        highest_amt = j
+
+#Sorts category dict based on the number of occurances and $amount
+sorted_catD_occ = sorted(category_dict.items(), key = lambda kv:kv[1])       
+sorted_catD_amt = sorted(category_dict.items(), key = lambda kv:kv[1][1])
+
+#fetches name of category which has highest occurances/$amount
+key_occ = sorted_catD_occ[0][0]
+key_amt = sorted_catD_amt[-1][0]
+
+print("Analysied data of user 1 concludes that: ")
+print("The category '",key_occ,"' has the highest number of occurances which is ",highest_occ_num,".")
+print("The category '",key_amt,"' has highest total $amount which is $",highest_amt,".")
